@@ -15,11 +15,13 @@ class BibliotecaApp {
     }
 
     String listAllLibraryBooks() {
+        String output = "----- Library Books -----\n";
 
-        return "----- Library Books -----" +
-                "In Search of Lost Time by Marcel Proust\n" +
-                "Ulysses by James Joyce\n" +
-                "Don Quixote by Miguel de Cervantes";
+        for(LibraryBook book : library) {
+            output += book + "\n";
+        }
+
+        return output;
     }
 
     List<LibraryBook> getLibrary() {

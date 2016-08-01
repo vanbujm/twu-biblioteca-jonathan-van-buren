@@ -2,11 +2,15 @@ package com.twu.biblioteca;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 public class TestBibliotecaApp {
 
@@ -43,12 +47,15 @@ public class TestBibliotecaApp {
     }
 
     @Test
-    public void libraryListsAllLibraryBooks() {
-        String expectedOutput = "----- Library Books -----" +
-                                "In Search of Lost Time by Marcel Proust\n" +
-                                "Ulysses by James Joyce\n" +
-                                "Don Quixote by Miguel de Cervantes";
-        assertEquals(expectedOutput, app.listAllLibraryBooks());
+    public void getBookReturnsNullIfBookDoesntExist() {
+        assertEquals(null, app.getBook("Doesn't Exist", "Should Fail"));
     }
 
+    @Test
+    public void libraryListsAllLibraryBooks() {
+        String expectedOutput = "----- Library Books -----\n" +
+                                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n";
+        assertEquals(expectedOutput, app.listAllLibraryBooks());
+    }
+    
 }
