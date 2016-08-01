@@ -10,11 +10,11 @@ class BibliotecaApp {
         this.library = library;
     }
 
-    static String welcome() {
+    String welcome() {
         return "Welcome to Biblioteca!";
     }
 
-    static String listAllLibraryBooks() {
+    String listAllLibraryBooks() {
 
         return "----- Library Books -----" +
                 "In Search of Lost Time by Marcel Proust\n" +
@@ -22,7 +22,15 @@ class BibliotecaApp {
                 "Don Quixote by Miguel de Cervantes";
     }
 
-    public List<LibraryBook> getLibrary() {
+    List<LibraryBook> getLibrary() {
         return library;
+    }
+
+    LibraryBook getBook(String title, String author) {
+        for(LibraryBook book : library) {
+            if(book.getTitle().equals(title) && book.getAuthor().equals(author))
+                return book;
+        }
+        return null;
     }
 }
