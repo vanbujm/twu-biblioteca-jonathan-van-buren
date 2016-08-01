@@ -1,27 +1,12 @@
 package com.twu.biblioteca;
 
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestBibliotecaApp {
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-
-    @Before
-    public void setUpStreams() {
-        System.setOut(new PrintStream(outContent));
-    }
-
-    @After
-    public void cleanUpStreams() {
-        System.setOut(null);
-    }
 
     @Test
     public void testWelcomeMessageSaysWelcome() {
@@ -29,8 +14,19 @@ public class TestBibliotecaApp {
     }
 
     @Test
-    public void testMainSaysWelcome() {
-        BibliotecaApp.main(new String[] {});
-        assertEquals("Welcome to Biblioteca!", outContent.toString());
+    public void BibliotecaAcceptsALibrary() {
+        ArrayList<LibraryBook> mockLibrary = new ArrayList<LibraryBook>();
+        BibliotecaApp testLibrary = new BibliotecaApp(mockLibrary);
+        assertEquals(mockLibrary, testLibrary.getLibrary());
     }
+
+    @Test
+    public void testListAllLibraryBooks() {
+        String expectedOutput = "----- Library Books -----" +
+                                "In Search of Lost Time by Marcel Proust\n" +
+                                "Ulysses by James Joyce\n" +
+                                "Don Quixote by Miguel de Cervantes";
+        assertEquals(expectedOutput, BibliotecaApp.listAllLibraryBooks());
+    }
+
 }
