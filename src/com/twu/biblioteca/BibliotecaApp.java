@@ -1,12 +1,16 @@
 package com.twu.biblioteca;
 
+import java.util.ArrayList;
 import java.util.List;
 
 class BibliotecaApp {
 
     private List<LibraryBook> library;
+    private ArrayList<String> menu;
 
     BibliotecaApp(List<LibraryBook> library) {
+        this.menu = new ArrayList<String>();
+        menu.add("List Books");
         this.library = library;
     }
 
@@ -34,5 +38,19 @@ class BibliotecaApp {
                 return book;
         }
         return null;
+    }
+
+    List getMenu() {
+        return menu;
+    }
+
+    String selectItem(int optionNumber) {
+        int actualIndex = optionNumber - 1;
+        try {
+            menu.get(actualIndex);
+        } catch (IndexOutOfBoundsException e) {
+            return "Select a valid option!";
+        }
+        return Integer.toString(actualIndex);
     }
 }

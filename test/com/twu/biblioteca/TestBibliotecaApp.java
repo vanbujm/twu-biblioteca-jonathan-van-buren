@@ -2,15 +2,11 @@ package com.twu.biblioteca;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 public class TestBibliotecaApp {
 
@@ -57,5 +53,14 @@ public class TestBibliotecaApp {
                                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n";
         assertEquals(expectedOutput, app.listAllLibraryBooks());
     }
-    
+
+    @Test
+    public void menuContainsListBooks() {
+        assertEquals("List Books", app.getMenu().get(0));
+    }
+
+    @Test
+    public void NinetyNineIsAnInvalidMenuOption() {
+        assertEquals("Select a valid option!", app.selectItem(99));
+    }
 }
