@@ -12,7 +12,7 @@ public class LoginService {
     private Boolean isLoggedIn = false;
 
     public Boolean login(String user, String password) {
-        Pattern pattern = Pattern.compile( "\\d\\d\\d-\\d\\d\\d\\d");
+        Pattern pattern = Pattern.compile( "^\\d\\d\\d-\\d\\d\\d\\d$");
         Matcher m = pattern.matcher(user);
         Boolean result = m.find();
         isLoggedIn = result;

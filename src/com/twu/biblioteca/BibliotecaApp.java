@@ -11,14 +11,17 @@ import java.util.Scanner;
 
 class BibliotecaApp {
 
+    private final LoginService loginService;
     private HashMap<String, List<LibraryMedia>> library;
     private ArrayList<String> mainMenu;
-    private InputStream stream;
+    private final InputStream stream;
+    private Boolean loggedIn = false;
 
     BibliotecaApp(HashMap<String, List<LibraryMedia>> library, InputStream stream, LoginService loginService) {
         populateMainMenu();
         this.library = library;
         this.stream = stream;
+        this.loginService = loginService;
     }
 
     private void populateMainMenu() {
@@ -29,6 +32,7 @@ class BibliotecaApp {
         mainMenu.add("List Movies");
         mainMenu.add("Checkout Movie");
         mainMenu.add("Return Movie");
+        mainMenu.add("Login");
     }
 
     String welcome() {
@@ -95,45 +99,72 @@ class BibliotecaApp {
             String selection = mainMenu.get(Integer.parseInt(selectItem(getValidInput(input))));
             if(selection.equals("List Books")) {
                 System.out.print(listAllLibraryMedia("book"));
-                goBackToMainMenu(userInput);
             }
-            if(selection.equals("Checkout Book")) {
-                System.out.print("Please type the title of the book you wish to checkout then press enter\n");
-                String title = userInput.nextLine();
-                System.out.print("Please type the author of the book you wish to checkout then press enter\n");
-                String author = userInput.nextLine();
-                System.out.print(getBook(title, author).checkOut() + "\n");
-                goBackToMainMenu(userInput);
-            }
-            if(selection.equals("Return Book")) {
-                System.out.print("Please type the title of the book you wish to return then press enter\n");
-                String title = userInput.nextLine();
-                System.out.print("Please type the author of the book you wish to return then press enter\n");
-                String author = userInput.nextLine();
-                System.out.print(getBook(title, author).returnMedia() + "\n");
-                goBackToMainMenu(userInput);
-            }
-            if(selection.equals("List Movies")) {
+            else if(selection.equals("List Movies")) {
                 System.out.print(listAllLibraryMedia("movie"));
-                goBackToMainMenu(userInput);
             }
-            if(selection.equals("Checkout Movie")) {
-                System.out.print("Please type the title of the movie you wish to checkout then press enter\n");
-                String title = userInput.nextLine();
-                System.out.print("Please type the year of the movie you wish to checkout then press enter\n");
-                String year = userInput.nextLine();
-                System.out.print(getMovie(title, year).checkOut() + "\n");
-                goBackToMainMenu(userInput);
+            else if(selection.equals("Login")) {
+                System.out.print("Please enter your libraryBooks number\n");
+                String user = userInput.nextLine();
+                System.out.print("Please enter your password\n");
+                String password = userInput.nextLine();
+                if(loginService.login(user, password)) {
+                    System.out.print("You are now logged in!\n");
+                    loggedIn = true;
+                    changeMenuLoggedIn(input);
+                }
+                else {
+                    System.out.print("Invalid username or password\n");
+                }
             }
-            if(selection.equals("Return Movie")) {
-                System.out.print("Please type the title of the movie you wish to return then press enter\n");
-                String title = userInput.nextLine();
-                System.out.print("Please type the year of the movie you wish to return then press enter\n");
-                String year = userInput.nextLine();
-                System.out.print(getMovie(title, year).returnMedia() + "\n");
-                goBackToMainMenu(userInput);
+            else if(selection.equals("Logout")) {
+                loggedIn = false;
+                System.out.print("You are Logged Out\n");
+                mainMenu.remove(Integer.parseInt(selectItem(getValidInput(input))));
+                mainMenu.remove(mainMenu.size()-1);
+                mainMenu.add("Login");
             }
+            else if(loggedIn) {
+                if(selection.equals("Checkout Book")) {
+                    System.out.print("Please type the title of the book you wish to checkout then press enter\n");
+                    String title = userInput.nextLine();
+                    System.out.print("Please type the author of the book you wish to checkout then press enter\n");
+                    String author = userInput.nextLine();
+                    System.out.print(getBook(title, author).checkOut() + "\n");
+                }
+                if(selection.equals("Return Book")) {
+                    System.out.print("Please type the title of the book you wish to return then press enter\n");
+                    String title = userInput.nextLine();
+                    System.out.print("Please type the author of the book you wish to return then press enter\n");
+                    String author = userInput.nextLine();
+                    System.out.print(getBook(title, author).returnMedia() + "\n");
+                }
+                if(selection.equals("Checkout Movie")) {
+                    System.out.print("Please type the title of the movie you wish to checkout then press enter\n");
+                    String title = userInput.nextLine();
+                    System.out.print("Please type the year of the movie you wish to checkout then press enter\n");
+                    String year = userInput.nextLine();
+                    System.out.print(getMovie(title, year).checkOut() + "\n");
+                }
+                if(selection.equals("Return Movie")) {
+                    System.out.print("Please type the title of the movie you wish to return then press enter\n");
+                    String title = userInput.nextLine();
+                    System.out.print("Please type the year of the movie you wish to return then press enter\n");
+                    String year = userInput.nextLine();
+                    System.out.print(getMovie(title, year).returnMedia() + "\n");
+                }
+            }
+            else {
+                System.out.print("Please log in before attempting this action\n");
+            }
+            goBackToMainMenu(userInput);
         }
+    }
+
+    private void changeMenuLoggedIn(String input) {
+        mainMenu.remove(Integer.parseInt(selectItem(getValidInput(input))));
+        mainMenu.add("User Info");
+        mainMenu.add("Logout");
     }
 
     private void goBackToMainMenu(Scanner userInput) {
