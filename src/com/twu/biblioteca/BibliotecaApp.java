@@ -1,17 +1,28 @@
 package com.twu.biblioteca;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 class BibliotecaApp {
 
     private List<LibraryBook> library;
     private ArrayList<String> mainMenu;
+    private InputStream stream;
 
     BibliotecaApp(List<LibraryBook> library) {
         this.mainMenu = new ArrayList<String>();
         mainMenu.add("List Books");
         this.library = library;
+        this.stream = System.in;
+    }
+
+    BibliotecaApp(List<LibraryBook> library, InputStream stream) {
+        this.mainMenu = new ArrayList<String>();
+        mainMenu.add("List Books");
+        this.library = library;
+        this.stream = stream;
     }
 
     String welcome() {
@@ -37,7 +48,7 @@ class BibliotecaApp {
             if(book.getTitle().equals(title) && book.getAuthor().equals(author))
                 return book;
         }
-        return null;
+        return new LibraryBook(null, null, -1);
     }
 
     List getMainMenu() {
@@ -52,5 +63,33 @@ class BibliotecaApp {
             return "Select a valid option!";
         }
         return Integer.toString(actualIndex);
+    }
+
+    public void run() {
+        System.out.print(welcome() + "\n");
+        printMainMenu();
+
+        Scanner userInput = new Scanner(stream);
+        String input = userInput.next();
+        Boolean validInput = false;
+        while(!validInput) {
+            if(0 < Integer.parseInt(input) && Integer.parseInt(input) <= (mainMenu.size() + 1)) {
+                validInput = true;
+            }
+            else {
+                System.out.print("Select a valid option!");
+            }
+        }
+    }
+
+    private void printMainMenu() {
+        int lastItemNumber = 1;
+        for(int i=1; i < mainMenu.size() + 1; i++) {
+            System.out.print(i + ") " + mainMenu.get(i -1) +"\n");
+            lastItemNumber = i;
+        }
+        lastItemNumber++;
+        System.out.print(lastItemNumber + ") Exit\n");
+        System.out.print("\nPlease select a number and press enter");
     }
 }

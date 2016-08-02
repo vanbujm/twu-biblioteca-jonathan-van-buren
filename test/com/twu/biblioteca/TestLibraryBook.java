@@ -14,15 +14,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class TestLibraryBook {
     private LibraryBook mobyDick;
+    private LibraryBook nullBook;
 
     @Before
     public void setUp() throws Exception {
         mobyDick = new LibraryBook("Moby Dick", "Herman Melville", 1851);
+        nullBook = new LibraryBook(null, null, -1);
     }
 
     @After
     public void tearDown() throws Exception {
         mobyDick = null;
+        nullBook = null;
     }
 
     @Test
@@ -51,5 +54,22 @@ public class TestLibraryBook {
     public void canCheckOutBook() {
         mobyDick.checkOut();
         assertTrue(mobyDick.isCheckedOut());
+    }
+
+    @Test
+    public void cantCheckoutNullBook() {
+        assertEquals("That book is not available.",nullBook.checkOut());
+    }
+
+    @Test
+    public void canReturnBook() {
+        mobyDick.checkOut();
+        mobyDick.returnBook();
+        assertFalse(mobyDick.isCheckedOut());
+    }
+
+    @Test
+    public void cantReturnNullBook() {
+        assertEquals("That is not a valid book to return.", nullBook.returnBook());
     }
 }
