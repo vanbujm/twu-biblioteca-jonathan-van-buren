@@ -23,6 +23,8 @@ public class LoginService {
         return isLoggedIn? "Jane" : "Unauthorized";
     }
 
+    public String getUserID() { return isLoggedIn? "000-0000" : "Unauthorized"; }
+
     public String getEmail() {
         return isLoggedIn? "jane@email.com" : "Unauthorized";
     }

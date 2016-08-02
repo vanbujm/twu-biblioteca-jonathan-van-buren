@@ -8,6 +8,7 @@ abstract class LibraryMedia {
     private String title;
     private boolean checkedOut;
     private String type;
+    private String checkedOutTo;
 
     LibraryMedia() {
         checkedOut = false;
@@ -15,9 +16,10 @@ abstract class LibraryMedia {
         type = "media";
     }
 
-    String checkOut() {
+    String checkOut(String userID) {
         if(!isCheckedOut() && !isNullMedia()) {
             setCheckedOut(true);
+            setCheckedOutTo(userID);
             return "Thank you! Enjoy the " + type;
         }
         else {
@@ -30,6 +32,7 @@ abstract class LibraryMedia {
             return "That is not a valid " + type + " to return.";
         }
         setCheckedOut(false);
+        setCheckedOutTo(null);
         return "Thank you for returning the " + type + ".";
     }
 
@@ -55,5 +58,13 @@ abstract class LibraryMedia {
 
     void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCheckedOutTo() {
+        return checkedOutTo;
+    }
+
+    public void setCheckedOutTo(String checkedOutTo) {
+        this.checkedOutTo = checkedOutTo;
     }
 }

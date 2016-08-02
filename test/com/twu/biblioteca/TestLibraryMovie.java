@@ -52,18 +52,18 @@ public class TestLibraryMovie {
 
     @Test
     public void canCheckOutBook() {
-        pulpFiction.checkOut();
+        pulpFiction.checkOut("000-0000");
         assertTrue(pulpFiction.isCheckedOut());
     }
 
     @Test
     public void cantCheckoutnullMovie() {
-        assertEquals("That movie is not available.",nullMovie.checkOut());
+        assertEquals("That movie is not available.",nullMovie.checkOut("000-0000"));
     }
 
     @Test
     public void canReturnBook() {
-        pulpFiction.checkOut();
+        pulpFiction.checkOut("000-0000");
         pulpFiction.returnMedia();
         assertFalse(pulpFiction.isCheckedOut());
     }

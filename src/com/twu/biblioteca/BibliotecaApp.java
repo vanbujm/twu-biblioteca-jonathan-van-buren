@@ -2,7 +2,6 @@ package com.twu.biblioteca;
 
 import com.twu.loginService.LoginService;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,7 +129,8 @@ class BibliotecaApp {
                     String title = userInput.nextLine();
                     System.out.print("Please type the author of the book you wish to checkout then press enter\n");
                     String author = userInput.nextLine();
-                    System.out.print(getBook(title, author).checkOut() + "\n");
+                    System.out.print(getBook(title, author).checkOut(loginService.getUserID()) + "\n");
+
                 }
                 if(selection.equals("Return Book")) {
                     System.out.print("Please type the title of the book you wish to return then press enter\n");
@@ -144,7 +144,7 @@ class BibliotecaApp {
                     String title = userInput.nextLine();
                     System.out.print("Please type the year of the movie you wish to checkout then press enter\n");
                     String year = userInput.nextLine();
-                    System.out.print(getMovie(title, year).checkOut() + "\n");
+                    System.out.print(getMovie(title, year).checkOut(loginService.getUserID()) + "\n");
                 }
                 if(selection.equals("Return Movie")) {
                     System.out.print("Please type the title of the movie you wish to return then press enter\n");
@@ -152,6 +152,11 @@ class BibliotecaApp {
                     System.out.print("Please type the year of the movie you wish to return then press enter\n");
                     String year = userInput.nextLine();
                     System.out.print(getMovie(title, year).returnMedia() + "\n");
+                }
+                if(selection.equals("User Info")) {
+                    System.out.print("User: " + loginService.getName() + "\n");
+                    System.out.print("Email: " + loginService.getEmail() + "\n");
+                    System.out.print("Phone Number: " + loginService.getPhoneNumber() + "\n");
                 }
             }
             else {

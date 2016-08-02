@@ -28,18 +28,18 @@ public class TestBibliotecaApp {
                                              "8) Exit\n" +
                                              "\n" +
                                              "Please select a number and press enter\n";
-    private static final String MAIN_MENU_LOGGED_IN =  "Menu:\n" +
-            "1) List Books\n" +
-            "2) Checkout Book\n" +
-            "3) Return Book\n" +
-            "4) List Movies\n" +
-            "5) Checkout Movie\n" +
-            "6) Return Movie\n" +
-            "7) User Info\n" +
-            "8) Logout\n" +
-            "9) Exit\n" +
-            "\n" +
-            "Please select a number and press enter\n";
+    private static final String MAIN_MENU_LOGGED_IN =   "Menu:\n" +
+                                                        "1) List Books\n" +
+                                                        "2) Checkout Book\n" +
+                                                        "3) Return Book\n" +
+                                                        "4) List Movies\n" +
+                                                        "5) Checkout Movie\n" +
+                                                        "6) Return Movie\n" +
+                                                        "7) User Info\n" +
+                                                        "8) Logout\n" +
+                                                        "9) Exit\n" +
+                                                        "\n" +
+                                                        "Please select a number and press enter\n";
     private static final String WELCOME_MENU = "Welcome to Biblioteca!\n" +
                                                 MAIN_MENU;
     private static final String LIST_BOOKS     = "1\n";
@@ -50,6 +50,9 @@ public class TestBibliotecaApp {
     private static final String RETURN_MOVIE   = "6\n";
     private static final String LOGIN          = "7\n";
     private static final String EXIT           = "8\n";
+
+
+    private static final String USER_INFO      = "7\n";
     private static final String LOGOUT         = "8\n";
     private static final String EXIT_LOGGED_IN = "9\n";
     private static final String LOGIN_MESSAGE = "Please enter your libraryBooks number\n" +
@@ -133,25 +136,25 @@ public class TestBibliotecaApp {
 
     @Test
     public void checkingOutMobyDickGivesThankyouMessage() {
-        assertEquals("Thank you! Enjoy the book", app.getBook("Moby Dick", "Herman Melville").checkOut());
+        assertEquals("Thank you! Enjoy the book", app.getBook("Moby Dick", "Herman Melville").checkOut("000-0000"));
     }
 
     @Test
     public void mobyDickIsUnavailable() {
-        app.getBook("Moby Dick", "Herman Melville").checkOut();
-        assertEquals("That book is not available.", app.getBook("Moby Dick", "Herman Melville").checkOut());
+        app.getBook("Moby Dick", "Herman Melville").checkOut("000-0000");
+        assertEquals("That book is not available.", app.getBook("Moby Dick", "Herman Melville").checkOut("000-0000"));
     }
 
     @Test
     public void mobyDickDoesntShowUpOnList() {
-        app.getBook("Moby Dick", "Herman Melville").checkOut();
+        app.getBook("Moby Dick", "Herman Melville").checkOut("000-0000");
         String expectedOutput = "----- book Library -----\n";
         assertEquals(expectedOutput, app.listAllLibraryMedia("book"));
     }
 
     @Test
     public void returningMobyDickGivesThankyouMessage() {
-        app.getBook("Moby Dick", "Herman Melville").checkOut();
+        app.getBook("Moby Dick", "Herman Melville").checkOut("000-0000");
         assertEquals("Thank you for returning the book.",app.getBook("Moby Dick", "Herman Melville").returnMedia());
     }
 
@@ -403,5 +406,28 @@ public class TestBibliotecaApp {
                                 MAIN_MENU;
         app.run();
         assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void userDetailAreDisplayed() {
+        in = new ByteArrayInputStream((LOGIN + "000-0000\n" + "password\n" + USER_INFO + EXIT_LOGGED_IN).getBytes());
+        app = new BibliotecaApp(mockLibrary, in, loginService);
+        String expectedOutput = WELCOME_MENU +
+                                LOGIN_MESSAGE +
+                                MAIN_MENU_LOGGED_IN +
+                                "User: Jane\n" +
+                                "Email: jane@email.com\n" +
+                                "Phone Number: 0000 000 000\n" +
+                                MAIN_MENU_LOGGED_IN;
+        app.run();
+        assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void usernameIsStoredOnCheckout() {
+        in = new ByteArrayInputStream((LOGIN + "000-0000\n" + "password\n" + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + EXIT_LOGGED_IN).getBytes());
+        app = new BibliotecaApp(mockLibrary, in, loginService);
+        app.run();
+        assertEquals("000-0000", app.getBook("Moby Dick","Herman Melville").getCheckedOutTo());
     }
 }

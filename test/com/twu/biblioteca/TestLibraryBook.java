@@ -52,18 +52,18 @@ public class TestLibraryBook {
 
     @Test
     public void canCheckOutBook() {
-        mobyDick.checkOut();
+        mobyDick.checkOut("000-0000");
         assertTrue(mobyDick.isCheckedOut());
     }
 
     @Test
     public void cantCheckoutNullBook() {
-        assertEquals("That book is not available.",nullBook.checkOut());
+        assertEquals("That book is not available.",nullBook.checkOut("000-0000"));
     }
 
     @Test
     public void canReturnBook() {
-        mobyDick.checkOut();
+        mobyDick.checkOut("000-0000");
         mobyDick.returnMedia();
         assertFalse(mobyDick.isCheckedOut());
     }

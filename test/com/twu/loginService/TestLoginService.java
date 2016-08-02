@@ -42,6 +42,7 @@ public class TestLoginService {
         assertEquals("Jane", test.getName());
         assertEquals("jane@email.com", test.getEmail());
         assertEquals("0000 000 000", test.getPhoneNumber());
+        assertEquals("000-0000", test.getUserID());
     }
 
     @Test
@@ -49,5 +50,6 @@ public class TestLoginService {
         assertEquals("Unauthorized", test.getName());
         assertEquals("Unauthorized", test.getEmail());
         assertEquals("Unauthorized", test.getPhoneNumber());
+        assertEquals("Unauthorized", test.getUserID());
     }
 }
