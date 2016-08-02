@@ -14,7 +14,8 @@ import static org.junit.Assert.assertTrue;
 
 public class TestBibliotecaApp {
 
-    private static final String MAIN_MENU =  "1) List Books\n" +
+    private static final String MAIN_MENU =  "Menu:\n" +
+                                             "1) List Books\n" +
                                              "2) Checkout Book\n" +
                                              "3) Return Book\n" +
                                              "4) Exit\n" +

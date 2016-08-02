@@ -134,6 +134,7 @@ class BibliotecaApp {
     }
 
     private void printMainMenu() {
+        System.out.print("Menu:\n");
         int lastItemNumber = 1;
         for(int i=1; i < mainMenu.size() + 1; i++) {
             System.out.print(i + ") " + mainMenu.get(i -1) +"\n");
