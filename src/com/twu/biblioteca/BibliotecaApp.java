@@ -11,20 +11,17 @@ class BibliotecaApp {
     private ArrayList<String> mainMenu;
     private InputStream stream;
 
-    BibliotecaApp(List<LibraryBook> library) {
-        this.mainMenu = new ArrayList<String>();
-        mainMenu.add("List Books");
-        mainMenu.add("Checkout Book");
-        this.library = library;
-        this.stream = System.in;
-    }
-
     BibliotecaApp(List<LibraryBook> library, InputStream stream) {
-        this.mainMenu = new ArrayList<String>();
-        mainMenu.add("List Books");
-        mainMenu.add("Checkout Book");
+        populateMainMenu();
         this.library = library;
         this.stream = stream;
+    }
+
+    private void populateMainMenu() {
+        this.mainMenu = new ArrayList<String>();
+        mainMenu.add("List Books");
+        mainMenu.add("Checkout Book");
+        mainMenu.add("Return Book");
     }
 
     String welcome() {
@@ -90,10 +87,7 @@ class BibliotecaApp {
             String selection = mainMenu.get(Integer.parseInt(selectItem(getValidInput(input))));
             if(selection.equals("List Books")) {
                 System.out.print(listAllLibraryBooks());
-                printMainMenu();
-                String newInput = userInput.nextLine();
-                newInput = waitForMainMenuInput(userInput, newInput);
-                handleInput(newInput, userInput);
+                goBackToMainMenu(userInput);
             }
             if(selection.equals("Checkout Book")) {
                 System.out.print("Please type the title of the book you wish to checkout then press enter\n");
@@ -101,8 +95,24 @@ class BibliotecaApp {
                 System.out.print("Please type the author of the book you wish to checkout then press enter\n");
                 String author = userInput.nextLine();
                 System.out.print(getBook(title, author).checkOut() + "\n");
+                goBackToMainMenu(userInput);
+            }
+            if(selection.equals("Return Book")) {
+                System.out.print("Please type the title of the book you wish to return then press enter\n");
+                String title = userInput.nextLine();
+                System.out.print("Please type the author of the book you wish to return then press enter\n");
+                String author = userInput.nextLine();
+                System.out.print(getBook(title, author).returnBook() + "\n");
+                goBackToMainMenu(userInput);
             }
         }
+    }
+
+    private void goBackToMainMenu(Scanner userInput) {
+        printMainMenu();
+        String newInput = userInput.nextLine();
+        newInput = waitForMainMenuInput(userInput, newInput);
+        handleInput(newInput, userInput);
     }
 
     private boolean isExitItem(String input) {

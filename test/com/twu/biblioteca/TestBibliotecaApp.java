@@ -16,11 +16,17 @@ public class TestBibliotecaApp {
 
     private static final String MAIN_MENU =  "1) List Books\n" +
                                              "2) Checkout Book\n" +
-                                             "3) Exit\n" +
+                                             "3) Return Book\n" +
+                                             "4) Exit\n" +
                                              "\n" +
                                              "Please select a number and press enter\n";
     private static final String WELCOME_MENU = "Welcome to Biblioteca!\n" +
                                                 MAIN_MENU;
+    private static final String LIST_BOOKS = "1\n";
+    private static final String CHECKOUT_BOOK = "2\n";
+    private static final String RETURN_BOOK = "3\n";
+    private static final String EXIT = "4\n";
+
     private ArrayList<LibraryBook> mockLibrary;
     private BibliotecaApp app;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -38,7 +44,7 @@ public class TestBibliotecaApp {
 
     @Before
     public void setUp() {
-        in = new ByteArrayInputStream("3".getBytes());
+        in = new ByteArrayInputStream(EXIT.getBytes());
         mockLibrary = new ArrayList<LibraryBook>();
         mockLibrary.add(new LibraryBook("Moby Dick", "Herman Melville", 1851));
 
@@ -127,7 +133,7 @@ public class TestBibliotecaApp {
 
     @Test
     public void menuRequestValidMenuItem() {
-        in = new ByteArrayInputStream("fail\n3".getBytes());
+        in = new ByteArrayInputStream(("fail\n" + EXIT).getBytes());
         app = new BibliotecaApp(mockLibrary, in);
         String expectedOutput = WELCOME_MENU +
                                 "Select a valid option!\n";
@@ -137,7 +143,7 @@ public class TestBibliotecaApp {
 
     @Test
     public void menuCanListBooks() {
-        in = new ByteArrayInputStream("1\n3\n".getBytes());
+        in = new ByteArrayInputStream((LIST_BOOKS + EXIT).getBytes());
         app = new BibliotecaApp(mockLibrary, in);
         String expectedOutput = WELCOME_MENU +
                                 "----- Library Books -----\n" +
@@ -148,8 +154,8 @@ public class TestBibliotecaApp {
     }
 
     @Test
-    public void youCanCheckoutBooksFromMenu() {
-        in = new ByteArrayInputStream("1\n2\nMoby Dick\nHerman Melville\n3\n".getBytes());
+    public void checkoutBookFromMenu() {
+        in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + EXIT).getBytes());
         app = new BibliotecaApp(mockLibrary, in);
         String expectedOutput = WELCOME_MENU +
                                 "----- Library Books -----\n" +
@@ -157,7 +163,64 @@ public class TestBibliotecaApp {
                                 MAIN_MENU +
                                 "Please type the title of the book you wish to checkout then press enter\n" +
                                 "Please type the author of the book you wish to checkout then press enter\n" +
-                                "Thank you! Enjoy the book\n";
+                                "Thank you! Enjoy the book\n" +
+                                MAIN_MENU;
+        app.run();
+        assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void failsToCheckoutBooksFromMenu() {
+        in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Not a\nreal book\n" + EXIT).getBytes());
+        app = new BibliotecaApp(mockLibrary, in);
+        String expectedOutput = WELCOME_MENU +
+                                "----- Library Books -----\n" +
+                                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
+                                MAIN_MENU +
+                                "Please type the title of the book you wish to checkout then press enter\n" +
+                                "Please type the author of the book you wish to checkout then press enter\n" +
+                                "That book is not available.\n" +
+                                MAIN_MENU;
+        app.run();
+        assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void returnBookFromMenu() {
+        in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + RETURN_BOOK + "Moby Dick\nHerman Melville\n" + EXIT).getBytes());
+        app = new BibliotecaApp(mockLibrary, in);
+        String expectedOutput = WELCOME_MENU +
+                                "----- Library Books -----\n" +
+                                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
+                                MAIN_MENU +
+                                "Please type the title of the book you wish to checkout then press enter\n" +
+                                "Please type the author of the book you wish to checkout then press enter\n" +
+                                "Thank you! Enjoy the book\n" +
+                                MAIN_MENU +
+                                "Please type the title of the book you wish to return then press enter\n" +
+                                "Please type the author of the book you wish to return then press enter\n" +
+                                "Thank you for returning the book.\n" +
+                                MAIN_MENU;
+        app.run();
+        assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void failsToReturnBook() {
+        in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + RETURN_BOOK + "This should\nFail\n" + EXIT).getBytes());
+        app = new BibliotecaApp(mockLibrary, in);
+        String expectedOutput = WELCOME_MENU +
+                "----- Library Books -----\n" +
+                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
+                MAIN_MENU +
+                "Please type the title of the book you wish to checkout then press enter\n" +
+                "Please type the author of the book you wish to checkout then press enter\n" +
+                "Thank you! Enjoy the book\n" +
+                MAIN_MENU +
+                "Please type the title of the book you wish to return then press enter\n" +
+                "Please type the author of the book you wish to return then press enter\n" +
+                "That is not a valid book to return.\n" +
+                MAIN_MENU;
         app.run();
         assertEquals(expectedOutput, outContent.toString());
     }
