@@ -2,16 +2,17 @@ package com.twu.biblioteca;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 class BibliotecaApp {
 
-    private List<LibraryBook> library;
+    private HashMap<String, List<LibraryMedia>> library;
     private ArrayList<String> mainMenu;
     private InputStream stream;
 
-    BibliotecaApp(List<LibraryBook> library, InputStream stream) {
+    BibliotecaApp(HashMap<String, List<LibraryMedia>> library, InputStream stream) {
         populateMainMenu();
         this.library = library;
         this.stream = stream;
@@ -22,32 +23,36 @@ class BibliotecaApp {
         mainMenu.add("List Books");
         mainMenu.add("Checkout Book");
         mainMenu.add("Return Book");
+        mainMenu.add("List Movies");
+        mainMenu.add("Checkout Movie");
+        mainMenu.add("Return Movie");
     }
 
     String welcome() {
         return "Welcome to Biblioteca!";
     }
 
-    String listAllLibraryBooks() {
-        String output = "----- Library Books -----\n";
-        for(LibraryBook book : library) {
-            if(!book.isCheckedOut()) {
-                output += book + "\n";
-            }
-        }
-        return output;
-    }
-
-    List<LibraryBook> getLibrary() {
-        return library;
-    }
-
     LibraryBook getBook(String title, String author) {
-        for(LibraryBook book : library) {
+        for(LibraryMedia media : library.get("book")) {
+            LibraryBook book = (LibraryBook)media;
             if(book.getTitle().equals(title) && book.getAuthor().equals(author))
                 return book;
         }
         return new LibraryBook(null, null, -1);
+    }
+
+    private LibraryMovie getMovie(String title, String year) {
+        try {
+            int intYear = Integer.parseInt(year);
+            for(LibraryMedia media : library.get("movie")) {
+                LibraryMovie movie = (LibraryMovie) media;
+                if(movie.getTitle().equals(title) && movie.getYear() == intYear)
+                    return movie;
+            }
+        } catch (NumberFormatException e) {
+            return new LibraryMovie(null, null, -1, -1);
+        }
+        return new LibraryMovie(null, null, -1, -1);
     }
 
     List getMainMenu() {
@@ -86,7 +91,7 @@ class BibliotecaApp {
         if(!isExitItem(input)) {
             String selection = mainMenu.get(Integer.parseInt(selectItem(getValidInput(input))));
             if(selection.equals("List Books")) {
-                System.out.print(listAllLibraryBooks());
+                System.out.print(listAllLibraryMedia("book"));
                 goBackToMainMenu(userInput);
             }
             if(selection.equals("Checkout Book")) {
@@ -102,7 +107,27 @@ class BibliotecaApp {
                 String title = userInput.nextLine();
                 System.out.print("Please type the author of the book you wish to return then press enter\n");
                 String author = userInput.nextLine();
-                System.out.print(getBook(title, author).returnBook() + "\n");
+                System.out.print(getBook(title, author).returnMedia() + "\n");
+                goBackToMainMenu(userInput);
+            }
+            if(selection.equals("List Movies")) {
+                System.out.print(listAllLibraryMedia("movie"));
+                goBackToMainMenu(userInput);
+            }
+            if(selection.equals("Checkout Movie")) {
+                System.out.print("Please type the title of the movie you wish to checkout then press enter\n");
+                String title = userInput.nextLine();
+                System.out.print("Please type the year of the movie you wish to checkout then press enter\n");
+                String year = userInput.nextLine();
+                System.out.print(getMovie(title, year).checkOut() + "\n");
+                goBackToMainMenu(userInput);
+            }
+            if(selection.equals("Return Movie")) {
+                System.out.print("Please type the title of the movie you wish to return then press enter\n");
+                String title = userInput.nextLine();
+                System.out.print("Please type the year of the movie you wish to return then press enter\n");
+                String year = userInput.nextLine();
+                System.out.print(getMovie(title, year).returnMedia() + "\n");
                 goBackToMainMenu(userInput);
             }
         }
@@ -143,5 +168,19 @@ class BibliotecaApp {
         lastItemNumber++;
         System.out.print(lastItemNumber + ") Exit\n");
         System.out.print("\nPlease select a number and press enter\n");
+    }
+
+    String listAllLibraryMedia(String type) {
+        String output = "----- " + type + " Library -----\n";
+        for(LibraryMedia media : library.get(type)) {
+            if(!media.isCheckedOut()) {
+                output += media + "\n";
+            }
+        }
+        return output;
+    }
+
+    HashMap<String, List<LibraryMedia>> getLibrary() {
+        return library;
     }
 }

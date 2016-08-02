@@ -37,7 +37,7 @@ public class TestLibraryBook {
     public void testDetails() {
         assertEquals("Moby Dick", mobyDick.getTitle());
         assertEquals("Herman Melville", mobyDick.getAuthor());
-        assertEquals(1851, mobyDick.getPublicationDate());
+        assertEquals(1851, mobyDick.getPublicationYear());
     }
 
     @Test
@@ -64,12 +64,12 @@ public class TestLibraryBook {
     @Test
     public void canReturnBook() {
         mobyDick.checkOut();
-        mobyDick.returnBook();
+        mobyDick.returnMedia();
         assertFalse(mobyDick.isCheckedOut());
     }
 
     @Test
     public void cantReturnNullBook() {
-        assertEquals("That is not a valid book to return.", nullBook.returnBook());
+        assertEquals("That is not a valid book to return.", nullBook.returnMedia());
     }
 }
