@@ -14,11 +14,13 @@ import static org.junit.Assert.assertTrue;
 
 public class TestBibliotecaApp {
 
-    private static final String WELCOME_MENU =  "Welcome to Biblioteca!\n" +
-                                                "1) List Books\n" +
-                                                "2) Exit\n" +
-                                                "\n" +
-                                                "Please select a number and press enter\n";
+    private static final String MAIN_MENU =  "1) List Books\n" +
+                                             "2) Checkout Book\n" +
+                                             "3) Exit\n" +
+                                             "\n" +
+                                             "Please select a number and press enter\n";
+    private static final String WELCOME_MENU = "Welcome to Biblioteca!\n" +
+                                                MAIN_MENU;
     private ArrayList<LibraryBook> mockLibrary;
     private BibliotecaApp app;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -36,7 +38,7 @@ public class TestBibliotecaApp {
 
     @Before
     public void setUp() {
-        in = new ByteArrayInputStream("2".getBytes());
+        in = new ByteArrayInputStream("3".getBytes());
         mockLibrary = new ArrayList<LibraryBook>();
         mockLibrary.add(new LibraryBook("Moby Dick", "Herman Melville", 1851));
 
@@ -73,8 +75,7 @@ public class TestBibliotecaApp {
     @Test
     public void libraryListsAllLibraryBooks() {
         String expectedOutput = "----- Library Books -----\n" +
-                                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
-                                "Please type the title of the book you wish to checkout\n";
+                                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n";
         assertEquals(expectedOutput, app.listAllLibraryBooks());
     }
 
@@ -102,8 +103,7 @@ public class TestBibliotecaApp {
     @Test
     public void mobyDickDoesntShowUpOnList() {
         app.getBook("Moby Dick", "Herman Melville").checkOut();
-        String expectedOutput = "----- Library Books -----\n" +
-                                "Please type the title of the book you wish to checkout\n";
+        String expectedOutput = "----- Library Books -----\n";
         assertEquals(expectedOutput, app.listAllLibraryBooks());
     }
 
@@ -127,7 +127,7 @@ public class TestBibliotecaApp {
 
     @Test
     public void menuRequestValidMenuItem() {
-        in = new ByteArrayInputStream("fail\n2".getBytes());
+        in = new ByteArrayInputStream("fail\n3".getBytes());
         app = new BibliotecaApp(mockLibrary, in);
         String expectedOutput = WELCOME_MENU +
                                 "Select a valid option!\n";
@@ -137,12 +137,27 @@ public class TestBibliotecaApp {
 
     @Test
     public void menuCanListBooks() {
-        in = new ByteArrayInputStream("1".getBytes());
+        in = new ByteArrayInputStream("1\n3\n".getBytes());
         app = new BibliotecaApp(mockLibrary, in);
         String expectedOutput = WELCOME_MENU +
                                 "----- Library Books -----\n" +
                                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
-                                "Please type the title of the book you wish to checkout\n";
+                                MAIN_MENU;
+        app.run();
+        assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void youCanCheckoutBooksFromMenu() {
+        in = new ByteArrayInputStream("1\n2\nMoby Dick\nHerman Melville\n3\n".getBytes());
+        app = new BibliotecaApp(mockLibrary, in);
+        String expectedOutput = WELCOME_MENU +
+                                "----- Library Books -----\n" +
+                                "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
+                                MAIN_MENU +
+                                "Please type the title of the book you wish to checkout then press enter\n" +
+                                "Please type the author of the book you wish to checkout then press enter\n" +
+                                "Thank you! Enjoy the book\n";
         app.run();
         assertEquals(expectedOutput, outContent.toString());
     }

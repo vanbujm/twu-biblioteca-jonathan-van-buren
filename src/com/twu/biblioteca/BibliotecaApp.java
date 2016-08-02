@@ -14,6 +14,7 @@ class BibliotecaApp {
     BibliotecaApp(List<LibraryBook> library) {
         this.mainMenu = new ArrayList<String>();
         mainMenu.add("List Books");
+        mainMenu.add("Checkout Book");
         this.library = library;
         this.stream = System.in;
     }
@@ -21,6 +22,7 @@ class BibliotecaApp {
     BibliotecaApp(List<LibraryBook> library, InputStream stream) {
         this.mainMenu = new ArrayList<String>();
         mainMenu.add("List Books");
+        mainMenu.add("Checkout Book");
         this.library = library;
         this.stream = stream;
     }
@@ -36,7 +38,6 @@ class BibliotecaApp {
                 output += book + "\n";
             }
         }
-        output += "Please type the title of the book you wish to checkout\n";
         return output;
     }
 
@@ -71,19 +72,35 @@ class BibliotecaApp {
         printMainMenu();
 
         Scanner userInput = new Scanner(stream);
-        String input = userInput.next();
-        while(getValidInput(input) == -1) {
-            System.out.print("Select a valid option!\n");
-            input = userInput.next();
-        }
-        handleInput(input);
+        String input = userInput.nextLine();
+        input = waitForMainMenuInput(userInput, input);
+        handleInput(input, userInput);
     }
 
-    private void handleInput(String input) {
+    private String waitForMainMenuInput(Scanner userInput, String input) {
+        while(getValidInput(input) == -1) {
+            System.out.print("Select a valid option!\n");
+            input = userInput.nextLine();
+        }
+        return input;
+    }
+
+    private void handleInput(String input, Scanner userInput) {
         if(!isExitItem(input)) {
             String selection = mainMenu.get(Integer.parseInt(selectItem(getValidInput(input))));
             if(selection.equals("List Books")) {
                 System.out.print(listAllLibraryBooks());
+                printMainMenu();
+                String newInput = userInput.nextLine();
+                newInput = waitForMainMenuInput(userInput, newInput);
+                handleInput(newInput, userInput);
+            }
+            if(selection.equals("Checkout Book")) {
+                System.out.print("Please type the title of the book you wish to checkout then press enter\n");
+                String title = userInput.nextLine();
+                System.out.print("Please type the author of the book you wish to checkout then press enter\n");
+                String author = userInput.nextLine();
+                System.out.print(getBook(title, author).checkOut() + "\n");
             }
         }
     }
