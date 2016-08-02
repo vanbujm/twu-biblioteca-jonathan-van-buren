@@ -6,11 +6,11 @@ import java.util.List;
 class BibliotecaApp {
 
     private List<LibraryBook> library;
-    private ArrayList<String> menu;
+    private ArrayList<String> mainMenu;
 
     BibliotecaApp(List<LibraryBook> library) {
-        this.menu = new ArrayList<String>();
-        menu.add("List Books");
+        this.mainMenu = new ArrayList<String>();
+        mainMenu.add("List Books");
         this.library = library;
     }
 
@@ -20,11 +20,11 @@ class BibliotecaApp {
 
     String listAllLibraryBooks() {
         String output = "----- Library Books -----\n";
-
         for(LibraryBook book : library) {
-            output += book + "\n";
+            if(!book.isCheckedOut()) {
+                output += book + "\n";
+            }
         }
-
         return output;
     }
 
@@ -40,14 +40,14 @@ class BibliotecaApp {
         return null;
     }
 
-    List getMenu() {
-        return menu;
+    List getMainMenu() {
+        return mainMenu;
     }
 
     String selectItem(int optionNumber) {
         int actualIndex = optionNumber - 1;
         try {
-            menu.get(actualIndex);
+            mainMenu.get(actualIndex);
         } catch (IndexOutOfBoundsException e) {
             return "Select a valid option!";
         }

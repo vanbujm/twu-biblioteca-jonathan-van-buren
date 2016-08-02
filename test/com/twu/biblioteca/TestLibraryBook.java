@@ -6,9 +6,11 @@ import org.junit.Test;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Created by vanbujm on 2/08/2016.
+ * @author Created by vanbujm on 2/08/2016.
  */
 public class TestLibraryBook {
     private LibraryBook mobyDick;
@@ -38,5 +40,16 @@ public class TestLibraryBook {
     @Test
     public void testReadableToString() {
         assertEquals("Title: Moby Dick, Author: Herman Melville, Publication Date: 1851", mobyDick.toString());
+    }
+
+    @Test
+    public void mobyDickIsNotCheckedOut() {
+        assertFalse(mobyDick.isCheckedOut());
+    }
+
+    @Test
+    public void canCheckOutBook() {
+        mobyDick.checkOut();
+        assertTrue(mobyDick.isCheckedOut());
     }
 }
