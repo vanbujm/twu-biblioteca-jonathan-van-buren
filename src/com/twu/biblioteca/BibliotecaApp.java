@@ -36,6 +36,7 @@ class BibliotecaApp {
                 output += book + "\n";
             }
         }
+        output += "Please type the title of the book you wish to checkout\n";
         return output;
     }
 
@@ -71,14 +72,37 @@ class BibliotecaApp {
 
         Scanner userInput = new Scanner(stream);
         String input = userInput.next();
-        Boolean validInput = false;
-        while(!validInput) {
-            if(0 < Integer.parseInt(input) && Integer.parseInt(input) <= (mainMenu.size() + 1)) {
-                validInput = true;
+        while(getValidInput(input) == -1) {
+            System.out.print("Select a valid option!\n");
+            input = userInput.next();
+        }
+        handleInput(input);
+    }
+
+    private void handleInput(String input) {
+        if(!isExitItem(input)) {
+            String selection = mainMenu.get(Integer.parseInt(selectItem(getValidInput(input))));
+            if(selection.equals("List Books")) {
+                System.out.print(listAllLibraryBooks());
+            }
+        }
+    }
+
+    private boolean isExitItem(String input) {
+        return getValidInput(input) == mainMenu.size() + 1;
+    }
+
+    private int getValidInput(String input) {
+        try {
+            int testNumber = Integer.parseInt(input);
+            if(0 < testNumber && testNumber <= (mainMenu.size() + 1)) {
+                return testNumber;
             }
             else {
-                System.out.print("Select a valid option!");
+                return -1;
             }
+        } catch (NumberFormatException e) {
+            return -1;
         }
     }
 
@@ -90,6 +114,6 @@ class BibliotecaApp {
         }
         lastItemNumber++;
         System.out.print(lastItemNumber + ") Exit\n");
-        System.out.print("\nPlease select a number and press enter");
+        System.out.print("\nPlease select a number and press enter\n");
     }
 }
