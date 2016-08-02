@@ -1,5 +1,6 @@
 package com.twu.biblioteca;
 
+import com.twu.loginService.LoginService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +41,7 @@ public class TestBibliotecaApp {
     private BibliotecaApp app;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private ByteArrayInputStream in;
+    private LoginService loginService;
 
     @Before
     public void setUpStreams() {
@@ -61,8 +63,9 @@ public class TestBibliotecaApp {
         ArrayList<LibraryMedia> movies = new ArrayList<LibraryMedia>();
         movies.add(new LibraryMovie("Pulp Fiction", "Quentin Tarantino", 1994, 8.9));
         mockLibrary.put("movie", movies);
+        loginService = new LoginService();
 
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
     }
 
     @After
@@ -148,7 +151,7 @@ public class TestBibliotecaApp {
     @Test
     public void menuRequestValidMenuItem() {
         in = new ByteArrayInputStream(("fail\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "Select a valid option!\n";
         app.run();
@@ -158,7 +161,7 @@ public class TestBibliotecaApp {
     @Test
     public void menuCanListBooks() {
         in = new ByteArrayInputStream((LIST_BOOKS + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "----- book Library -----\n" +
                                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
@@ -170,7 +173,7 @@ public class TestBibliotecaApp {
     @Test
     public void checkoutBookFromMenu() {
         in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "----- book Library -----\n" +
                                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
@@ -186,7 +189,7 @@ public class TestBibliotecaApp {
     @Test
     public void failsToCheckoutBooksFromMenu() {
         in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Not a\nreal book\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "----- book Library -----\n" +
                                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
@@ -202,7 +205,7 @@ public class TestBibliotecaApp {
     @Test
     public void returnBookFromMenu() {
         in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + RETURN_BOOK + "Moby Dick\nHerman Melville\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "----- book Library -----\n" +
                                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
@@ -222,7 +225,7 @@ public class TestBibliotecaApp {
     @Test
     public void failsToReturnBook() {
         in = new ByteArrayInputStream((LIST_BOOKS + CHECKOUT_BOOK + "Moby Dick\nHerman Melville\n" + RETURN_BOOK + "This should\nFail\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                 "----- book Library -----\n" +
                 "Title: Moby Dick, Author: Herman Melville, Publication Date: 1851\n" +
@@ -249,7 +252,7 @@ public class TestBibliotecaApp {
     @Test
     public void menuCanListMovies() {
         in = new ByteArrayInputStream((LIST_MOVIES + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                 "----- movie Library -----\n" +
                 "Title: Pulp Fiction, Director: Quentin Tarantino, Release Year: 1994, Rating: 8.9\n" +
@@ -261,7 +264,7 @@ public class TestBibliotecaApp {
     @Test
     public void checkoutMovieFromMenu() {
         in = new ByteArrayInputStream((LIST_MOVIES + CHECKOUT_MOVIE + "Pulp Fiction\n1994\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                 "----- movie Library -----\n" +
                 "Title: Pulp Fiction, Director: Quentin Tarantino, Release Year: 1994, Rating: 8.9\n" +
@@ -277,7 +280,7 @@ public class TestBibliotecaApp {
     @Test
     public void failsToCheckoutMoviesFromMenu() {
         in = new ByteArrayInputStream((LIST_MOVIES + CHECKOUT_MOVIE + "Not a\nreal movie\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                 "----- movie Library -----\n" +
                 "Title: Pulp Fiction, Director: Quentin Tarantino, Release Year: 1994, Rating: 8.9\n" +
@@ -293,7 +296,7 @@ public class TestBibliotecaApp {
     @Test
     public void returnMovieFromMenu() {
         in = new ByteArrayInputStream((LIST_MOVIES + CHECKOUT_MOVIE + "Pulp Fiction\n1994\n" + RETURN_MOVIE + "Pulp Fiction\n1994\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "----- movie Library -----\n" +
                                 "Title: Pulp Fiction, Director: Quentin Tarantino, Release Year: 1994, Rating: 8.9\n" +
@@ -313,7 +316,7 @@ public class TestBibliotecaApp {
     @Test
     public void failsToReturnMovie() {
         in = new ByteArrayInputStream((LIST_MOVIES + CHECKOUT_MOVIE + "Pulp Fiction\n1994\n" + RETURN_MOVIE + "This should\nfail\n" + EXIT).getBytes());
-        app = new BibliotecaApp(mockLibrary, in);
+        app = new BibliotecaApp(mockLibrary, in, loginService);
         String expectedOutput = WELCOME_MENU +
                                 "----- movie Library -----\n" +
                                 "Title: Pulp Fiction, Director: Quentin Tarantino, Release Year: 1994, Rating: 8.9\n" +
@@ -328,5 +331,10 @@ public class TestBibliotecaApp {
                                 MAIN_MENU;
         app.run();
         assertEquals(expectedOutput, outContent.toString());
+    }
+
+    @Test
+    public void userLogsIn() {
+
     }
 }

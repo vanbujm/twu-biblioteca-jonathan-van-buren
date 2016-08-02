@@ -1,5 +1,8 @@
 package com.twu.biblioteca;
 
+import com.twu.loginService.LoginService;
+
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +15,7 @@ class BibliotecaApp {
     private ArrayList<String> mainMenu;
     private InputStream stream;
 
-    BibliotecaApp(HashMap<String, List<LibraryMedia>> library, InputStream stream) {
+    BibliotecaApp(HashMap<String, List<LibraryMedia>> library, InputStream stream, LoginService loginService) {
         populateMainMenu();
         this.library = library;
         this.stream = stream;
